@@ -6,6 +6,6 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation' (Protocol in workflow.md) 05774b7
 
 ## Phase 2: Templating
-- [ ] Task: Create `conductor/exercise_template.rs` to be used for future binaries.
-- [ ] Task: Include 'Committee Insight' placeholders in the template.
+- [x] Task: Create `conductor/exercise_template.rs` to be used for future binaries. 23f5d58
+- [x] Task: Include 'Committee Insight' placeholders in the template. 23f5d58
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Templating' (Protocol in workflow.md)

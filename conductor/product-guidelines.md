@@ -20,3 +20,6 @@
 
 ## Dependency Policy
 - **Standard Library First:** To master Rust's foundations, prioritize the standard library. Use external crates only when the learning objective specifically requires them (e.g., learning a specific library or when the standard library is insufficient for a complex task).
+
+## Version Control Conventions
+- **Gitmoji:** Every commit message title must start with an appropriate Gitmoji (or emoji) that reflects the purpose of the commit (e.g., :sparkles: for new features, :bug: for bug fixes, :memo: for documentation).

@@ -20,13 +20,31 @@ fn main() {
     println!("Exercise Ownership Laboratory initialized.");
 }
 
+pub fn takes_ownership(s: String) -> String {
+    unimplemented!()
+}
+
+pub fn borrows_string(s: &String) -> usize {
+    unimplemented!()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test_basic_functionality() {
-        // Your tests here
-        assert!(true);
+    fn test_takes_ownership() {
+        let s = String::from("hello");
+        let result = takes_ownership(s);
+        assert_eq!(result, "hello");
+        // s is moved here, cannot use it
+    }
+
+    #[test]
+    fn test_borrows_string() {
+        let s = String::from("hello");
+        let len = borrows_string(&s);
+        assert_eq!(len, 5);
+        assert_eq!(s, "hello"); // s is still available because it was borrowed
     }
 }

@@ -3,7 +3,7 @@
 ## Phase 1: Move and Immutable Borrow
 - [x] Task: Create `src/bin/ownership_lab.rs` using the exercise template. 6a631c1
 - [x] Task: Write tests demonstrating ownership moves and borrow rules. 4de3ac5
-- [ ] Task: Implement `takes_ownership` and `borrows_string` functions.
+- [x] Task: Implement `takes_ownership` and `borrows_string` functions. bb4cf82
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Move and Immutable Borrow' (Protocol in workflow.md)
 
 ## Phase 2: Mutable Borrow and References

@@ -12,20 +12,40 @@
 //!
 //! ## Philosophical Journal
 //!
-//! [Personal reflections on the learning process, the challenges faced, and how the
-//! committee's advice influenced the implementation.]
+//! Ownership is the core innovation of Rust. By enforcing strict rules about
+//! who 'owns' data at compile time, we eliminate entire classes of bugs (double free,
+//! use-after-free) without the overhead of a garbage collector.
 
 fn main() {
-    // Your implementation here
-    println!("Exercise Ownership Laboratory initialized.");
+    let s1 = String::from("Hello Rust");
+
+    // s1 is borrowed here. Ownership remains with main.
+    let len = borrows_string(&s1);
+    println!("The length of '{}' is {}.", s1, len);
+
+    // s1 is moved here. takes_ownership now owns the data.
+    let s2 = takes_ownership(s1);
+
+    // println!("{}", s1); // This would cause a compile error!
+    println!("Ownership moved. New string: {}", s2);
 }
 
+/// Demonstrates moving ownership into a function.
+///
+/// *   **Graydon Hoare:** "Safety is not just about avoiding crashes; it's about
+///     knowing exactly who is responsible for the data."
 pub fn takes_ownership(s: String) -> String {
-    unimplemented!()
+    println!("I now own: {}", s);
+    s // Ownership is moved back to the caller
 }
 
-pub fn borrows_string(s: &String) -> usize {
-    unimplemented!()
+/// Demonstrates borrowing data without taking ownership.
+///
+/// *   **Niko Matsakis:** "References allow multiple parts of the code to read
+///     data simultaneously, but the rules ensure that no one can change it while
+///     others are reading."
+pub fn borrows_string(s: &str) -> usize {
+    s.len()
 }
 
 #[cfg(test)]
@@ -43,8 +63,8 @@ mod tests {
     #[test]
     fn test_borrows_string() {
         let s = String::from("hello");
-        let len = borrows_string(&s);
+        let len = borrows_string(&s); // Works because String derefs to &str
         assert_eq!(len, 5);
-        assert_eq!(s, "hello"); // s is still available because it was borrowed
+        assert_eq!(s, "hello");
     }
 }

@@ -5,8 +5,9 @@ use crossterm::{
 };
 use ratatui::{
     backend::CrosstermBackend,
-    widgets::{Block, Borders, Paragraph},
-    Terminal,
+    layout::{Constraint, Direction, Layout},
+    widgets::{Block, Borders},
+    Frame, Terminal,
 };
 use std::{error::Error, io};
 
@@ -58,15 +59,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn run_app(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, app: &mut App) -> io::Result<()> {
     loop {
-        terminal.draw(|f| {
-            let size = f.area();
-            let block = Block::default()
-                .title("String Lab - Press 'q' to quit")
-                .borders(Borders::ALL);
-            let paragraph = Paragraph::new("Welcome to the Rust String Types Deep Dive!")
-                .block(block);
-            f.render_widget(paragraph, size);
-        })?;
+        terminal.draw(|f| ui(f, app))?;
 
         if let Event::Key(key) = event::read()? {
             if let KeyCode::Char(c) = key.code {
@@ -79,3 +72,59 @@ fn run_app(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, app: &mut App)
         }
     }
 }
+
+fn ui(f: &mut Frame, _app: &mut App) {
+    let chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Min(1),
+            Constraint::Length(10),
+        ])
+        .split(f.area());
+
+    let main_chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Percentage(20),
+            Constraint::Percentage(80),
+        ])
+        .split(chunks[0]);
+
+    let menu = Block::default()
+        .title("Main Menu")
+        .borders(Borders::ALL);
+    f.render_widget(menu, main_chunks[0]);
+
+    let content = Block::default()
+        .title("Content")
+        .borders(Borders::ALL);
+    f.render_widget(content, main_chunks[1]);
+
+    let visualizer = Block::default()
+        .title("Memory Visualizer")
+        .borders(Borders::ALL);
+    f.render_widget(visualizer, chunks[1]);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ratatui::{backend::TestBackend, Terminal};
+
+    #[test]
+    fn test_ui_layout_contains_main_sections() {
+        let backend = TestBackend::new(100, 50);
+        let mut terminal = Terminal::new(backend).unwrap();
+        let mut app = App::new();
+
+        terminal.draw(|f| ui(f, &mut app)).unwrap();
+
+        let buffer = terminal.backend().buffer();
+        // Check for specific titles that indicate the layout
+        let content = format!("{:?}", buffer);
+        assert!(content.contains("Main Menu"), "UI missing 'Main Menu'");
+        assert!(content.contains("Memory Visualizer"), "UI missing 'Memory Visualizer'");
+        assert!(content.contains("Content"), "UI missing 'Content'");
+    }
+}
+

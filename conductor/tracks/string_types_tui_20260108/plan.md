@@ -7,7 +7,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation and TUI Skeleton' (Protocol in workflow.md) 1dfce99
 
 ## Phase 2: Core Strings and Memory Visualization
-- [ ] Task: Implement `String` and `&str` demonstration logic
+- [~] Task: Implement `String` and `&str` demonstration logic
 - [ ] Task: Develop the Dynamic Memory Visualizer for stack/heap pointers and buffers
 - [ ] Task: Add C++ conceptual comparison notes for `std::string` and `std::string_view`
 - [ ] Task: Write tests for memory layout calculation logic (e.g., pointer/len/cap offsets)

@@ -28,9 +28,16 @@ enum StringCategory {
     Bytes,
 }
 
+struct StringStats {
+    len: usize,
+    capacity: usize,
+    pointer: usize,
+}
+
 struct App {
     should_quit: bool,
     selected_category: StringCategory,
+    input_string: String,
 }
 
 impl App {
@@ -38,6 +45,19 @@ impl App {
         Self {
             should_quit: false,
             selected_category: StringCategory::Standard,
+            input_string: String::from("Hello Rust"),
+        }
+    }
+
+    fn set_input_string(&mut self, s: &str) {
+        self.input_string = s.to_string();
+    }
+
+    fn get_string_stats(&self) -> StringStats {
+        StringStats {
+            len: self.input_string.len(),
+            capacity: self.input_string.capacity(),
+            pointer: self.input_string.as_ptr() as usize,
         }
     }
 
@@ -149,15 +169,16 @@ mod tests {
     }
 
     #[test]
-    fn test_app_has_categories() {
-        use strum::IntoEnumIterator;
-        let app = App::new();
-        // Assert app has a selected category
-        let _ = app.selected_category;
-
-        // Assert we can iterate
-        let count = StringCategory::iter().count();
-        assert!(count > 0);
+    fn test_string_logic_transitions() {
+        let mut app = App::new();
+        // Ensure we can set a custom string in the app
+        app.set_input_string("Hello");
+        assert_eq!(app.input_string, "Hello");
+        
+        // Ensure we can calculate stats
+        let stats = app.get_string_stats();
+        assert_eq!(stats.len, 5);
+        assert!(stats.capacity >= 5);
     }
 }
 

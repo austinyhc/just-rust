@@ -3,7 +3,7 @@
 ## Phase 1: Foundation and TUI Skeleton
 - [x] Task: Scaffold `src/bin/string_lab.rs` with basic `ratatui` event loop f105def
 - [x] Task: Implement TUI layout with Main Menu, Content Pane, and Memory Visualizer Pane c333383
-- [~] Task: Create a base `StringType` trait or enum to handle different demonstrations
+- [x] Task: Create a base `StringType` trait or enum to handle different demonstrations 6093f83
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation and TUI Skeleton' (Protocol in workflow.md)
 
 ## Phase 2: Core Strings and Memory Visualization

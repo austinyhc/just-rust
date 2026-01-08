@@ -14,7 +14,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Core Strings and Memory Visualization' (Protocol in workflow.md) 7c57837
 
 ## Phase 3: OS and Path Strings
-- [ ] Task: Implement `PathBuf`/`Path` and `OsString`/`OsStr` demonstration logic
+- [~] Task: Implement `PathBuf`/`Path` and `OsString`/`OsStr` demonstration logic
 - [ ] Task: Update Visualizer to handle potentially non-UTF8 data in `OsString`
 - [ ] Task: Add C++ conceptual comparison notes for `std::filesystem::path`
 - [ ] Task: Write tests for path manipulation and conversion logic

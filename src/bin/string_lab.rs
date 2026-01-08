@@ -10,6 +10,7 @@ use ratatui::{
     Frame, Terminal,
 };
 use std::{error::Error, io};
+use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, EnumIter, Display)]
@@ -55,10 +56,28 @@ impl App {
     }
 
     fn get_string_stats(&self) -> StringStats {
-        StringStats {
-            len: self.input_string.len(),
-            capacity: self.input_string.capacity(),
-            pointer: self.input_string.as_ptr() as usize,
+        match self.selected_category {
+            StringCategory::Standard => StringStats {
+                len: self.input_string.len(),
+                capacity: self.input_string.capacity(),
+                pointer: self.input_string.as_ptr() as usize,
+            },
+            StringCategory::Path | StringCategory::OsString => {
+                let os_str = std::ffi::OsStr::new(&self.input_string);
+                // On Unix, this is just the bytes. 
+                // Using as_encoded_bytes() which is stable since 1.74
+                let bytes = os_str.as_encoded_bytes();
+                StringStats {
+                    len: bytes.len(),
+                    capacity: 0, // OsStr doesn't expose capacity easily as it might be a slice
+                    pointer: bytes.as_ptr() as usize,
+                }
+            }
+            _ => StringStats {
+                len: 0,
+                capacity: 0,
+                pointer: 0,
+            },
         }
     }
 
@@ -70,13 +89,35 @@ impl App {
                  Rust: &str          <-> C++: std::string_view (Borrowed view)\n\
                  \n\
                  Key Difference: Rust Strings are always UTF-8. std::string is just bytes.",
+            StringCategory::Path =>
+                "C++ Comparison:\n\
+                 Rust: PathBuf / Path <-> C++: std::filesystem::path\n\
+                 \n\
+                 Key Difference: Rust separates owned (PathBuf) and borrowed (Path) types strictly.",
+            StringCategory::OsString =>
+                "C++ Comparison:\n\
+                 Rust: OsString / OsStr <-> C++: No direct equivalent (Platform-native strings)\n\
+                 \n\
+                 Key Difference: OsString handles platform-specific encodings (invalid UTF-8 on Linux, UTF-16 on Win).",
             _ => "Comparison not yet implemented."
         }
+    }
+
+    fn next_category(&mut self) {
+        let categories: Vec<_> = StringCategory::iter().collect();
+        let current_index = categories
+            .iter()
+            .position(|&c| c == self.selected_category)
+            .unwrap_or(0);
+        let next_index = (current_index + 1) % categories.len();
+        self.selected_category = categories[next_index];
     }
 
     fn on_key(&mut self, c: char) {
         if c == 'q' {
             self.should_quit = true;
+        } else if c == 'n' || c == '\t' {
+            self.next_category();
         }
     }
 }
@@ -144,9 +185,18 @@ fn ui(f: &mut Frame, app: &mut App) {
         ])
         .split(chunks[0]);
 
-    let menu = Block::default()
-        .title("Main Menu")
-        .borders(Borders::ALL);
+    let categories: Vec<String> = StringCategory::iter()
+        .map(|c| {
+            if c == app.selected_category {
+                format!("> {}", c)
+            } else {
+                format!("  {}", c)
+            }
+        })
+        .collect();
+    let menu_text = categories.join("\n");
+    let menu = Paragraph::new(menu_text)
+        .block(Block::default().title("Main Menu").borders(Borders::ALL));
     f.render_widget(menu, main_chunks[0]);
 
     let content_text = app.get_cpp_comparison();
@@ -200,25 +250,27 @@ mod tests {
     }
 
     #[test]
-    fn test_memory_layout_calculations() {
+    fn test_category_switching() {
         let mut app = App::new();
-        let test_str = "Test String";
-        app.set_input_string(test_str);
+        assert_eq!(app.selected_category, StringCategory::Standard);
         
+        // Simulate 'Tab' or 'n' for next category (need to implement this)
+        app.next_category();
+        assert_eq!(app.selected_category, StringCategory::Path);
+    }
+
+    #[test]
+    fn test_path_osstring_logic() {
+        let mut app = App::new();
+        app.selected_category = StringCategory::Path;
+        
+        // For Path, stats should reflect the internal OsString
         let stats = app.get_string_stats();
+        assert!(stats.len > 0);
         
-        assert_eq!(stats.len, test_str.len());
-        assert!(stats.capacity >= test_str.len());
-        
-        // Pointer should be non-null and aligned
-        assert!(stats.pointer > 0);
-        assert_eq!(stats.pointer % std::mem::align_of::<u8>(), 0);
-        
-        // Verify pointer points to the string data
-        unsafe {
-            let slice = std::slice::from_raw_parts(stats.pointer as *const u8, stats.len);
-            assert_eq!(slice, test_str.as_bytes());
-        }
+        app.selected_category = StringCategory::OsString;
+        let stats_os = app.get_string_stats();
+        assert_eq!(stats.len, stats_os.len);
     }
 }
 

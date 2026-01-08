@@ -1,0 +1,8 @@
+{
+  "track_id": "string_types_tui_20260108",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-08T10:00:00Z",
+  "updated_at": "2026-01-08T10:00:00Z",
+  "description": "Learn all the string types in Rust (do comparison with C++ if applicable) through a TUI application."
+}

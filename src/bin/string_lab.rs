@@ -10,7 +10,6 @@ use ratatui::{
     Frame, Terminal,
 };
 use std::{error::Error, io};
-use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, EnumIter, Display)]
@@ -50,6 +49,7 @@ impl App {
         }
     }
 
+    #[allow(dead_code)]
     fn set_input_string(&mut self, s: &str) {
         self.input_string = s.to_string();
     }

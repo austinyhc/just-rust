@@ -11,7 +11,7 @@
 - [x] Task: Develop the Dynamic Memory Visualizer for stack/heap pointers and buffers 3811258
 - [x] Task: Add C++ conceptual comparison notes for `std::string` and `std::string_view` 11fa468
 - [x] Task: Write tests for memory layout calculation logic (e.g., pointer/len/cap offsets) b74c5a0
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Strings and Memory Visualization' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Core Strings and Memory Visualization' (Protocol in workflow.md)
 
 ## Phase 3: OS and Path Strings
 - [ ] Task: Implement `PathBuf`/`Path` and `OsString`/`OsStr` demonstration logic

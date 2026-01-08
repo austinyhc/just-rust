@@ -10,14 +10,35 @@ use ratatui::{
     Frame, Terminal,
 };
 use std::{error::Error, io};
+use strum_macros::{Display, EnumIter};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, EnumIter, Display)]
+enum StringCategory {
+    #[strum(to_string = "String & &str")]
+    Standard,
+    #[strum(to_string = "PathBuf & Path")]
+    Path,
+    #[strum(to_string = "OsString & OsStr")]
+    OsString,
+    #[strum(to_string = "CString & CStr")]
+    CString,
+    #[strum(to_string = "Cow<str>")]
+    Cow,
+    #[strum(to_string = "Vec<u8> & &[u8]")]
+    Bytes,
+}
 
 struct App {
     should_quit: bool,
+    selected_category: StringCategory,
 }
 
 impl App {
     fn new() -> Self {
-        Self { should_quit: false }
+        Self {
+            should_quit: false,
+            selected_category: StringCategory::Standard,
+        }
     }
 
     fn on_key(&mut self, c: char) {
@@ -125,6 +146,18 @@ mod tests {
         assert!(content.contains("Main Menu"), "UI missing 'Main Menu'");
         assert!(content.contains("Memory Visualizer"), "UI missing 'Memory Visualizer'");
         assert!(content.contains("Content"), "UI missing 'Content'");
+    }
+
+    #[test]
+    fn test_app_has_categories() {
+        use strum::IntoEnumIterator;
+        let app = App::new();
+        // Assert app has a selected category
+        let _ = app.selected_category; 
+        
+        // Assert we can iterate
+        let count = StringCategory::iter().count();
+        assert!(count > 0);
     }
 }
 

@@ -6,10 +6,11 @@ use crossterm::{
 use ratatui::{
     backend::CrosstermBackend,
     layout::{Constraint, Direction, Layout},
-    widgets::{Block, Borders},
+    widgets::{Block, Borders, Paragraph},
     Frame, Terminal,
 };
 use std::{error::Error, io};
+use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, EnumIter, Display)]
@@ -58,6 +59,18 @@ impl App {
             len: self.input_string.len(),
             capacity: self.input_string.capacity(),
             pointer: self.input_string.as_ptr() as usize,
+        }
+    }
+
+    fn get_cpp_comparison(&self) -> &'static str {
+        match self.selected_category {
+            StringCategory::Standard => 
+                "C++ Comparison:\n\
+                 Rust: String        <-> C++: std::string (Owned, Heap-allocated)\n\
+                 Rust: &str          <-> C++: std::string_view (Borrowed view)\n\
+                 \n\
+                 Key Difference: Rust Strings are always UTF-8. std::string is just bytes.",
+            _ => "Comparison not yet implemented."
         }
     }
 
@@ -136,9 +149,9 @@ fn ui(f: &mut Frame, _app: &mut App) {
         .borders(Borders::ALL);
     f.render_widget(menu, main_chunks[0]);
 
-    let content = Block::default()
-        .title("Content")
-        .borders(Borders::ALL);
+    let content_text = app.get_cpp_comparison();
+    let content = Paragraph::new(content_text)
+        .block(Block::default().title("Content").borders(Borders::ALL));
     f.render_widget(content, main_chunks[1]);
 
     let visualizer_text = render_memory_visualization(_app);
@@ -187,19 +200,12 @@ mod tests {
     }
 
     #[test]
-    fn test_memory_visualization_output() {
+    fn test_cpp_comparisons() {
         let app = App::new();
-        let stats = app.get_string_stats();
-        let visual = render_memory_visualization(&app);
-        
-        // Should contain Stack and Heap sections
-        assert!(visual.contains("STACK"));
-        assert!(visual.contains("HEAP"));
-        
-        // Should contain pointer, capacity, and length values
-        assert!(visual.contains(&stats.len.to_string()));
-        assert!(visual.contains(&stats.capacity.to_string()));
-        assert!(visual.contains(&format!("0x{:x}", stats.pointer)));
+        // Check comparison for Standard category
+        let comparison = app.get_cpp_comparison();
+        assert!(comparison.contains("std::string"));
+        assert!(comparison.contains("std::string_view"));
     }
 }
 

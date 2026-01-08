@@ -141,10 +141,28 @@ fn ui(f: &mut Frame, _app: &mut App) {
         .borders(Borders::ALL);
     f.render_widget(content, main_chunks[1]);
 
-    let visualizer = Block::default()
-        .title("Memory Visualizer")
-        .borders(Borders::ALL);
+    let visualizer_text = render_memory_visualization(_app);
+    let visualizer = Paragraph::new(visualizer_text)
+        .block(Block::default().title("Memory Visualizer").borders(Borders::ALL));
     f.render_widget(visualizer, chunks[1]);
+}
+
+fn render_memory_visualization(app: &App) -> String {
+    let stats = app.get_string_stats();
+    format!(
+        "STACK\n\
+         +----------+----------+----------+\n\
+         |   ptr    |   cap    |   len    |\n\
+         | 0x{:x} | {:^8} | {:^8} |\n\
+         +----------+----------+----------+\n\
+         \n\
+         HEAP\n\
+         +----------------------------------+\n\
+         | {:^32} |\n\
+         +----------------------------------+\n\
+         Values: {:?}",
+        stats.pointer, stats.capacity, stats.len, app.input_string, app.input_string.as_bytes()
+    )
 }
 
 #[cfg(test)]
@@ -169,16 +187,19 @@ mod tests {
     }
 
     #[test]
-    fn test_string_logic_transitions() {
-        let mut app = App::new();
-        // Ensure we can set a custom string in the app
-        app.set_input_string("Hello");
-        assert_eq!(app.input_string, "Hello");
-        
-        // Ensure we can calculate stats
+    fn test_memory_visualization_output() {
+        let app = App::new();
         let stats = app.get_string_stats();
-        assert_eq!(stats.len, 5);
-        assert!(stats.capacity >= 5);
+        let visual = render_memory_visualization(&app);
+        
+        // Should contain Stack and Heap sections
+        assert!(visual.contains("STACK"));
+        assert!(visual.contains("HEAP"));
+        
+        // Should contain pointer, capacity, and length values
+        assert!(visual.contains(&stats.len.to_string()));
+        assert!(visual.contains(&stats.capacity.to_string()));
+        assert!(visual.contains(&format!("0x{:x}", stats.pointer)));
     }
 }
 

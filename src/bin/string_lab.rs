@@ -153,8 +153,8 @@ mod tests {
         use strum::IntoEnumIterator;
         let app = App::new();
         // Assert app has a selected category
-        let _ = app.selected_category; 
-        
+        let _ = app.selected_category;
+
         // Assert we can iterate
         let count = StringCategory::iter().count();
         assert!(count > 0);

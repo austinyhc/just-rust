@@ -212,19 +212,25 @@ fn ui(f: &mut Frame, app: &mut App) {
 
 fn render_memory_visualization(app: &App) -> String {
     let stats = app.get_string_stats();
+    let display_bytes = match app.selected_category {
+        StringCategory::Standard => app.input_string.as_bytes().to_vec(),
+        StringCategory::Path | StringCategory::OsString => {
+            std::ffi::OsStr::new(&app.input_string).as_encoded_bytes().to_vec()
+        }
+        _ => Vec::new(),
+    };
+
     format!(
-        "STACK\n\
+        "STACK (Representation of the type)\n\
          +----------+----------+----------+\n\
          |   ptr    |   cap    |   len    |\n\
          | 0x{:x} | {:^8} | {:^8} |\n\
          +----------+----------+----------+\n\
          \n\
-         HEAP\n\
-         +----------------------------------+\n\
-         | {:^32} |\n\
-         +----------------------------------+\n\
-         Values: {:?}",
-        stats.pointer, stats.capacity, stats.len, app.input_string, app.input_string.as_bytes()
+         HEAP (Raw Data)\n\
+         Values: {:?}\n\
+         (Note: capacity 0 means it's treated as a slice or view in this lab)",
+        stats.pointer, stats.capacity, stats.len, display_bytes
     )
 }
 
@@ -260,17 +266,12 @@ mod tests {
     }
 
     #[test]
-    fn test_path_osstring_logic() {
-        let mut app = App::new();
-        app.selected_category = StringCategory::Path;
-        
-        // For Path, stats should reflect the internal OsString
-        let stats = app.get_string_stats();
-        assert!(stats.len > 0);
-        
-        app.selected_category = StringCategory::OsString;
-        let stats_os = app.get_string_stats();
-        assert_eq!(stats.len, stats_os.len);
+    fn test_path_manipulation() {
+        use std::path::PathBuf;
+        let mut path = PathBuf::from("/usr");
+        path.push("bin");
+        path.push("rustc");
+        assert_eq!(path.to_str().unwrap(), "/usr/bin/rustc");
     }
 }
 

@@ -16,9 +16,9 @@
 ## Phase 3: OS and Path Strings
 - [x] Task: Implement `PathBuf`/`Path` and `OsString`/`OsStr` demonstration logic 198a9c9
 - [x] Task: Add C++ conceptual comparison notes for `std::filesystem::path` 11fa468
-- [ ] Task: Update Visualizer to handle potentially non-UTF8 data in `OsString`
-- [ ] Task: Write tests for path manipulation and conversion logic
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: OS and Path Strings' (Protocol in workflow.md)
+- [x] Task: Update Visualizer to handle potentially non-UTF8 data in `OsString` 2cfdf0e
+- [x] Task: Write tests for path manipulation and conversion logic 2cfdf0e
+- [~] Task: Conductor - User Manual Verification 'Phase 3: OS and Path Strings' (Protocol in workflow.md)
 
 ## Phase 4: FFI Strings and Byte Buffers
 - [ ] Task: Implement `CString` and `CStr` demonstration logic

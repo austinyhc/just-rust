@@ -6,12 +6,12 @@
 - [x] Task: Create a base `StringType` trait or enum to handle different demonstrations 6093f83
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation and TUI Skeleton' (Protocol in workflow.md) 1dfce99
 
-## Phase 2: Core Strings and Memory Visualization
+## Phase 2: Core Strings and Memory Visualization [checkpoint: 7c57837]
 - [x] Task: Implement `String` and `&str` demonstration logic dfb4956
 - [x] Task: Develop the Dynamic Memory Visualizer for stack/heap pointers and buffers 3811258
 - [x] Task: Add C++ conceptual comparison notes for `std::string` and `std::string_view` 11fa468
 - [x] Task: Write tests for memory layout calculation logic (e.g., pointer/len/cap offsets) b74c5a0
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Core Strings and Memory Visualization' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Core Strings and Memory Visualization' (Protocol in workflow.md) 7c57837
 
 ## Phase 3: OS and Path Strings
 - [ ] Task: Implement `PathBuf`/`Path` and `OsString`/`OsStr` demonstration logic

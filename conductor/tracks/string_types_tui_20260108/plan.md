@@ -9,7 +9,7 @@
 ## Phase 2: Core Strings and Memory Visualization
 - [x] Task: Implement `String` and `&str` demonstration logic dfb4956
 - [x] Task: Develop the Dynamic Memory Visualizer for stack/heap pointers and buffers 3811258
-- [~] Task: Add C++ conceptual comparison notes for `std::string` and `std::string_view`
+- [x] Task: Add C++ conceptual comparison notes for `std::string` and `std::string_view` 11fa468
 - [ ] Task: Write tests for memory layout calculation logic (e.g., pointer/len/cap offsets)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Strings and Memory Visualization' (Protocol in workflow.md)
 

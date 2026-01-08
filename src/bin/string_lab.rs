@@ -127,7 +127,7 @@ fn run_app(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, app: &mut App)
     }
 }
 
-fn ui(f: &mut Frame, _app: &mut App) {
+fn ui(f: &mut Frame, app: &mut App) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -154,7 +154,7 @@ fn ui(f: &mut Frame, _app: &mut App) {
         .block(Block::default().title("Content").borders(Borders::ALL));
     f.render_widget(content, main_chunks[1]);
 
-    let visualizer_text = render_memory_visualization(_app);
+    let visualizer_text = render_memory_visualization(app);
     let visualizer = Paragraph::new(visualizer_text)
         .block(Block::default().title("Memory Visualizer").borders(Borders::ALL));
     f.render_widget(visualizer, chunks[1]);
@@ -200,12 +200,25 @@ mod tests {
     }
 
     #[test]
-    fn test_cpp_comparisons() {
-        let app = App::new();
-        // Check comparison for Standard category
-        let comparison = app.get_cpp_comparison();
-        assert!(comparison.contains("std::string"));
-        assert!(comparison.contains("std::string_view"));
+    fn test_memory_layout_calculations() {
+        let mut app = App::new();
+        let test_str = "Test String";
+        app.set_input_string(test_str);
+        
+        let stats = app.get_string_stats();
+        
+        assert_eq!(stats.len, test_str.len());
+        assert!(stats.capacity >= test_str.len());
+        
+        // Pointer should be non-null and aligned
+        assert!(stats.pointer > 0);
+        assert_eq!(stats.pointer % std::mem::align_of::<u8>(), 0);
+        
+        // Verify pointer points to the string data
+        unsafe {
+            let slice = std::slice::from_raw_parts(stats.pointer as *const u8, stats.len);
+            assert_eq!(slice, test_str.as_bytes());
+        }
     }
 }
 
